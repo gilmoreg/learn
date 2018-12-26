@@ -63,4 +63,12 @@ func main() {
 	fmt.Println(fruitSlice, len(fruitSlice)) // [grape blueberry] 2
 	fmt.Println(fruitSlice[1:2])             // [blueberry]
 
+	// Pointers
+	a := 5
+	b := &a
+	fmt.Println(a, b)     // 5 0xc0000180e8
+	fmt.Printf("%T\n", b) // *int
+	// * gets value of pointer
+	fmt.Println(*&a) // 5
+	fmt.Println(*b)  // 5
 }

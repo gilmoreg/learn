@@ -4,6 +4,7 @@ package main
 import (
 	"fmt"
 	"math"
+	"strconv"
 
 	"github.com/gilmoreg/learn/go/first/reverse"
 )
@@ -21,6 +22,25 @@ func greeting(str string) string {
 // Shortening multiple parameters of same type
 func getSum(num1, num2 int) int {
 	return num1 + num2
+}
+
+// Structs
+
+// Person ()
+type Person struct {
+	firstName, lastName, city string
+	age                       int
+}
+
+// Value reciever method - not changing object
+func (p Person) greet() string {
+	return "Hello " + p.firstName + " " + p.lastName + ", I see you are " + strconv.Itoa(p.age)
+}
+
+// Pointer reciever method - changing object
+func (p *Person) ageUp() int {
+	p.age++
+	return p.age
 }
 
 func main() {
@@ -71,4 +91,12 @@ func main() {
 	// * gets value of pointer
 	fmt.Println(*&a) // 5
 	fmt.Println(*b)  // 5
+
+	// struct literals
+	person1 := Person{firstName: "Grayson", lastName: "Gilmore", age: 36}
+	person2 := Person{"Grayson", "Gilmore", "Bellevue", 36}
+	fmt.Println(person1, person2)
+	fmt.Println(person1.firstName)
+	fmt.Println(person1.greet())
+	fmt.Println(person2.ageUp())
 }

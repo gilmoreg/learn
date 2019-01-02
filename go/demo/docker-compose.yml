@@ -3,8 +3,8 @@ version: "3"
 services:
   web:
     build:
-      context: ./web
-      dockerfile: ../Dockerfile
+      context: .
+      dockerfile: ./Dockerfile
     volumes:
       - ./web:/app
     ports:

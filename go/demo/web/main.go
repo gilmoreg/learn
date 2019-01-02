@@ -4,9 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gilmoreg/learn/go/web/middleware"
-
-	"github.com/gilmoreg/learn/go/web/controllers"
+	"github.com/gilmoreg/learn/go/demo/web/controllers"
+	"github.com/gilmoreg/learn/go/demo/web/middleware/jwt"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/urfave/negroni"

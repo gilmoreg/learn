@@ -1,5 +1,5 @@
 .env
 tmp
-.mod
-.sum
+go.mod
+go.sum
 .DS_Store

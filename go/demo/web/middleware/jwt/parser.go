@@ -118,6 +118,7 @@ func (p *Parser) ParseUnverified(tokenString string, claims Claims) (token *Toke
 	// JSON Decode. Special case for map type to avoid weird pointer behavior
 	if c, ok := token.Claims.(mapClaims); ok {
 		err = dec.Decode(&c)
+		token.Claims = c
 	} else {
 		err = dec.Decode(&claims)
 	}

@@ -1,14 +1,16 @@
 package jwt
 
 import (
+	"context"
 	"crypto/rsa"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 )
 
 var parser *Parser
+
+type Key string
 
 func getTokenFromRequest(r *http.Request) string {
 	auth := strings.SplitN(r.Header.Get("Authorization"), " ", 2)
@@ -17,7 +19,6 @@ func getTokenFromRequest(r *http.Request) string {
 	}
 	accessToken, err := r.Cookie("access_token")
 	if err != nil {
-		fmt.Println(err)
 		return ""
 	}
 	return accessToken.Value
@@ -47,7 +48,9 @@ func verifyJWT(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	}
 
 	if _, ok := token.Claims.(mapClaims); ok && token.Valid {
-		next(rw, r)
+		ctx := r.Context()
+		ctx = context.WithValue(ctx, Key("user"), token.Claims.(mapClaims))
+		next(rw, r.WithContext(ctx))
 	} else {
 		http.Error(rw, "Not authorized", 401)
 		return

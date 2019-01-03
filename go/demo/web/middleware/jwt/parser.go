@@ -2,11 +2,96 @@ package jwt
 
 import (
 	"bytes"
+	"crypto/rsa"
+	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
+	"math/big"
+	"net/http"
+	"os"
 	"strings"
 )
+
+type JWK struct {
+	Alg string   `json:"alg"`
+	Kty string   `json:"kty"`
+	Use string   `json:"use"`
+	X5c []string `json:"x5c"`
+	N   string   `json:"n"`
+	E   string   `json:"e"`
+	Kid string   `json:"kid"`
+	X5t string   `json:"x5t"`
+}
+
+type JWKSResponse struct {
+	Keys []JWK `json:"keys"`
+}
+
+var jwks map[string]*rsa.PublicKey
+
+func init() {
+	fmt.Println("Fetching JWKS")
+	resp, err := http.Get(os.Getenv("JWKS_URL"))
+	if err != nil {
+		panic(err)
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err != nil {
+		panic(err)
+	}
+	var jwksResponse JWKSResponse
+	err = json.Unmarshal(body, &jwksResponse)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, key := range jwksResponse.Keys {
+		var publicKey, err = createPublicKey(key)
+		if err != nil {
+			panic(err)
+		}
+		jwks[key.Kid] = publicKey
+	}
+
+	fmt.Println("Fetched JWKS")
+}
+
+func createPublicKey(key JWK) (*rsa.PublicKey, error) {
+	nStr := key.N
+	eStr := key.E
+
+	// Base64URL Decode the strings
+	decN, _ := base64.RawURLEncoding.DecodeString(nStr)
+	decE, _ := base64.RawURLEncoding.DecodeString(eStr)
+
+	n := big.NewInt(0)
+	n.SetBytes(decN)
+
+	// Pad decE if it is less than 8 bytes.
+	var eBytes []byte
+	if len(decE) < 8 {
+		eBytes = make([]byte, 8-len(decE), 8)
+		eBytes = append(eBytes, decE...)
+	} else {
+		eBytes = decE
+	}
+
+	eReader := bytes.NewReader(eBytes)
+	var e uint64
+	err := binary.Read(eReader, binary.BigEndian, &e)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	publicKey := rsa.PublicKey{N: n, E: int(e)}
+
+	return &publicKey, nil
+}
 
 type Parser struct {
 	UseJSONNumber        bool // Use JSON Number format in JSON decoder
@@ -22,11 +107,11 @@ func (m MapClaims) Valid() error {
 // Parse, validate, and return a token.
 // keyFunc will receive the parsed token and should return the key for validating.
 // If everything is kosher, err will be nil
-func (p *Parser) Parse(tokenString string, keyFunc Keyfunc) (*Token, error) {
-	return p.ParseWithClaims(tokenString, MapClaims{}, keyFunc)
+func (p *Parser) Parse(tokenString string) (*Token, error) {
+	return p.ParseWithClaims(tokenString, MapClaims{})
 }
 
-func (p *Parser) ParseWithClaims(tokenString string, claims Claims, keyFunc Keyfunc) (*Token, error) {
+func (p *Parser) ParseWithClaims(tokenString string, claims Claims) (*Token, error) {
 	token, parts, err := p.ParseUnverified(tokenString, claims)
 	if err != nil {
 		return token, err
@@ -38,16 +123,6 @@ func (p *Parser) ParseWithClaims(tokenString string, claims Claims, keyFunc Keyf
 		return token, fmt.Errorf("signing method %v is invalid", token.Header["alg"])
 	}
 
-	// Lookup key
-	var key interface{}
-	if keyFunc == nil {
-		// keyFunc was not provided.  short circuiting validation
-		return token, fmt.Errorf("no Keyfunc was provided")
-	}
-	if key, err = keyFunc(token); err != nil {
-		return token, err
-	}
-
 	// Validate Claims
 	if !p.SkipClaimsValidation {
 		if err := token.Claims.Valid(); err != nil {
@@ -55,19 +130,20 @@ func (p *Parser) ParseWithClaims(tokenString string, claims Claims, keyFunc Keyf
 		}
 	}
 
+	// Lookup key
+	key, ok := jwks[token.Header["kid"].(string)]
+	if !ok {
+		return nil, errors.New("no matching key")
+	}
+
 	// Perform validation
 	token.Signature = parts[2]
-	if err = token.Method.Verify(strings.Join(parts[0:2], "."), token.Signature, key); err != nil {
-		vErr.Inner = err
-		vErr.Errors |= ValidationErrorSignatureInvalid
+	if err = Verify(strings.Join(parts[0:2], "."), token.Signature, key); err != nil {
+		return nil, err
 	}
 
-	if vErr.valid() {
-		token.Valid = true
-		return token, nil
-	}
-
-	return token, vErr
+	token.Valid = true
+	return token, nil
 }
 
 // WARNING: Don't use this method unless you know what you're doing

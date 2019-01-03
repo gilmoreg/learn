@@ -6,8 +6,9 @@ import (
 
 	"github.com/gilmoreg/learn/go/demo/web/controllers"
 	"github.com/gilmoreg/learn/go/demo/web/middleware/jwt"
-	"github.com/gorilla/mux"
+
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/gorilla/mux"
 	"github.com/urfave/negroni"
 	negroniprometheus "github.com/zbindenren/negroni-prometheus"
 )

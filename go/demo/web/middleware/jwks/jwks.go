@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"math/big"
 	"net/http"
-	"os"
 )
 
 type jwk struct {
@@ -61,10 +60,10 @@ func createPublicKey(key jwk) (*rsa.PublicKey, error) {
 	return &publicKey, nil
 }
 
-// FetchJWKS - Fetch JWKS from URL in env var JWKS_URL
-func FetchJWKS() map[string]*rsa.PublicKey {
+// FetchJWKS - Fetch JWKS from URL
+func FetchJWKS(url string) map[string]*rsa.PublicKey {
 	fmt.Println("Fetching JWKS")
-	resp, err := http.Get(os.Getenv("JWKS_URL"))
+	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)
 	}

@@ -14,13 +14,11 @@ import (
 var jwks map[string]*rsa.PublicKey
 
 // CreateParser - initialize JWT parser
-// if 'keys' is nil, JWKS will be fetched from os.Getenv("JWKS_URL") via HTTP
 func CreateParser(keys map[string]*rsa.PublicKey) *Parser {
-	if keys != nil {
-		jwks = keys
-		return new(Parser)
+	if keys == nil {
+		panic("Must supply JWKS")
 	}
-	jwks = FetchJWKS()
+	jwks = keys
 	return new(Parser)
 }
 

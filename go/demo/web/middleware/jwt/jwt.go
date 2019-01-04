@@ -58,7 +58,6 @@ func verifyJWT(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 }
 
 // VerifyJWT - factory function for JWT validation middleware
-// If 'keys' is nil JWKS will be fetched via HTTP
 func VerifyJWT(keys map[string]*rsa.PublicKey) func(http.ResponseWriter, *http.Request, http.HandlerFunc) {
 	parser = CreateParser(keys)
 	return verifyJWT

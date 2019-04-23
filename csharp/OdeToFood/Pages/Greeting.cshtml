@@ -1,0 +1,7 @@
+@page "{name}"
+@inject IGreeter Greeter
+@{
+    ViewBag.Title = "Greetings!";
+}
+<div>@Greeter.GetMessageOfTheDay()</div>
+<div>The page directive looks at the HTTP request (query, url, form data) - ? marks as optional</div>

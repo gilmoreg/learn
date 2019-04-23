@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <UsingTask AssemblyFile="C:\Users\gilmoreg\Projects\learnmsbuild\Pluralsight.Msbuild.Tasks\bin\Debug\Pluralsight.Msbuild.Tasks.dll" TaskName="AddTwoNumbers" />
+    <UsingTask AssemblyFile="C:\Users\gilmoreg\Projects\learnmsbuild\Pluralsight.Msbuild.Tasks\bin\Debug\Pluralsight.Msbuild.Tasks.dll" TaskName="MultiplyTwoNumbers" />
+    <UsingTask  TaskName="DivideTwoNumbers"
+                TaskFactory="CodeTaskFactory"
+                AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+
+        <ParameterGroup>
+            <NumberOne ParameterType="System.Double" Required="true" />
+            <NumberTwo ParameterType="System.Double" Required="true" />
+            <Result ParameterType="System.Double" Output="true" />
+        </ParameterGroup>
+
+        <Task>
+            <Code Type="Fragment" Language="CS">
+                Result = NumberOne / NumberTwo;
+                Log.LogMessage(MessageImportance.High, "Divided two numbers", null);
+            </Code>
+        </Task>
+
+    </UsingTask>
+</Project>

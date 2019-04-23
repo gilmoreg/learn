@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pluralsight.Msbuild.Tasks", "Pluralsight.Msbuild.Tasks\Pluralsight.Msbuild.Tasks.csproj", "{05316B92-CDD9-4B5C-811F-D0C185671C0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05316B92-CDD9-4B5C-811F-D0C185671C0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05316B92-CDD9-4B5C-811F-D0C185671C0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05316B92-CDD9-4B5C-811F-D0C185671C0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05316B92-CDD9-4B5C-811F-D0C185671C0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3BB645F7-2E56-4596-88C1-77D3AC59DBA5}
+	EndGlobalSection
+EndGlobal

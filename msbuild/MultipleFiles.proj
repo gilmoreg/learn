@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="Common.targets" />
+  <!-- Could do this here, but more common to do in targets files -->
+  <!-- <Import Project="Common.props" /> -->
+
+  <Target Name="EnterHere" DependsOnTargets="TargetA">
+    <Message Text="Entry point" />
+    <Message Text="Hello, $(FullName)" />
+  </Target>
+
+  <!-- Overrides declarations in included files -->
+  <Target Name="TargetA">
+    <Message Text="TargetA from the proj file" />
+  </Target>
+
+</Project>

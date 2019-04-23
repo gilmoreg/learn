@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <PropertyGroup>
+    <DoIt>foo</DoIt>
+  </PropertyGroup>
+
+  <!-- This will still run even though TargetC does not actually execute given its condition -->
+  <Target Name="TargetA" DependsOnTargets="TargetC">
+    <Message Text="This is Target A" />
+  </Target>
+
+  <Target Name="TargetB">
+    <Message Text="This is Target B" />
+  </Target>
+
+  <Target Name="TargetC" Condition="$(DoIt) == 'foobar'">
+    <Message Text="This is Target C" />
+  </Target>
+
+  <Target Name="TargetD">
+    <Message Text="This is Target D" />
+  </Target>
+
+</Project>

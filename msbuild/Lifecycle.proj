@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <Project DefaultTargets="TargetC;TargetA" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="TargetA" DependsOnTargets="TargetB" AfterTargets="TargetD">
+    <Message Text="This is Target A" />
+    <!-- <CallTarget Targets="TargetB;TargetC" /> -->
+  </Target>
+
+  <!-- DependsOnTargets is satisified if the target has EVER run - will only run once -->
+  <Target Name="TargetB" DependsOnTargets="TargetC">
+    <Message Text="This is Target B" />
+  </Target>
+
+  <Target Name="TargetC">
+    <Message Text="This is Target C" />
+  </Target>
+
+  <!-- Since this appears in AfterTargets of A, /t:TargetD will trigger all 4 targets -->
+  <!-- But just running A will never run D -->
+  <Target Name="TargetD">
+    <Message Text="This is Target D" />
+  </Target>
+
+</Project>

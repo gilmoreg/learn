@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DefaultTargets can be overridden by CLI - /target:GoodbyeWorld -->
+<!-- <Project DefaultTargets="HelloWorld" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"> -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Name>Homer</Name>
+    <FullName>$(Name) Simpson</FullName>
+    <FilesPath>$(MsBuildProjectDirectory)\*</FilesPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Items Include="$(FilesPath)" />
+  </ItemGroup>
+
+  <Target Name="ListFiles">
+    <Message Text="@(Items)" />
+    <!-- Syntax for accessing metadata about ItemGroup -->
+    <Message Text="@(Items->'%(ModifiedTime)')" />
+  </Target>
+
+  <Target Name="ReservedProps">
+    <Message Text="MsBuildProjectDirectory: $(MsBuildProjectDirectory)" />
+  </Target>
+  
+  <Target Name="GoodbyeWorld">
+    <Message Text="Goodbye cruel world!" Importance="low" />
+  </Target>
+  <Target Name="HelloWorld">
+    <Message Text="Hello $(Name)!" Importance="High" />
+  </Target>
+</Project>

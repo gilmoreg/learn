@@ -42,6 +42,14 @@ fn scope_and_shadowing() {
 
 }
 
+// Tuples can be used as function arguments and as return values
+fn reverse(pair: (i32, bool)) -> (bool, i32) {
+    // `let` can be used to bind the members of a tuple to variables
+    let (integer, boolean) = pair;
+
+    (boolean, integer)
+}
+
 fn operators() {
     let mut a = 12 * 4 + 2;
     a = a + 1; // ++/-- not supported
